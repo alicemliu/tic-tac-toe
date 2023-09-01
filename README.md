@@ -19,7 +19,7 @@ This application leverages React on the frontend and calls an API to fetch autho
 
 Below is a diagram of the overall flow:
 
-!(https://github.com/alicemliu/tic-tac-toe/blob/main/tictactoe_arch.png)
+![](https://github.com/alicemliu/tic-tac-toe/blob/main/tictactoe_arch.png)
 
 ## Design Considerations
 
