@@ -7,7 +7,9 @@ import {
 } from '@testing-library/react';
 import { expect } from 'chai';
 import Login from '../../src/login';
-import sinon, { SinonStub } from 'sinon';
+import { SinonStub } from 'sinon';
+
+const sinon = require('sinon');
 
 describe(Login.name, () => {
   let fetchStub: SinonStub;
@@ -28,7 +30,7 @@ describe(Login.name, () => {
         <Login onLogin={mockOnLogin}/>
       </Router>
     );
-  };
+  }
 
   it('should render input for email and button to log in', async () => {
     renderComponent();
@@ -40,7 +42,7 @@ describe(Login.name, () => {
     expect(loginButton).to.exist
   });
 
-  it('should render error message if there is an error getting the token', async () => {
+  it('should render error message if there is an error fetching the token', async () => {
     fetchStub.rejects();
     renderComponent();
 
@@ -51,6 +53,12 @@ describe(Login.name, () => {
       expect(errorText).to.exist;
     });
   });
+
+  // TODO
+  it('should redirect to /game after successfully fetching the token');
+  it('should set token in sessionStorage after successfully fetching the token');
+  it('should not get token if email inputted is invalid');
+  it('should display loading button while fetching token');
 
   const submitForm = async (email: string) => {
     const emailInput = screen.getByTestId('email-input').querySelector('input');

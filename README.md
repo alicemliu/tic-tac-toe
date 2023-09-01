@@ -21,13 +21,15 @@ Below is a diagram of the overall flow:
 
 ![](https://github.com/alicemliu/tic-tac-toe/blob/main/tictactoe_arch.png)
 
-## Design Considerations
+## Design & Setup
 
 - I opted to use [Vite](https://vitejs.dev) to quickly set up a Typescript React project and development server. However, something more customizable like [webpack](https://webpack.js.org) might be needed for a production web app.
 
 - I used [Material UI](https://mui.com/material-ui/) as a design framework, which includes some built in styles, accessibility support, and more.
 
 - I initally implemented the game logic with `useState`, but I later refactored it to use `useReducer` instead. I believe `useReducer` is more appropriate because the state updates are more complex and interdependent (e.g. each time `board` changes, `currentPlayer` also changes). This approach also helps encapsulate some shared logic, such as adding a move and checking the board for a winner.
+
+- I set up `mocha`, `sinon`, and `chai` to run, mock, and assert tests in combination with [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/).
 
 ## Potential Improvements
 
@@ -40,4 +42,4 @@ because the server currently returns the entire board, we would still need to ch
 
 - The provided [APIs](https://d9u7x85vp9.execute-api.us-east-2.amazonaws.com/production/api-docs/#/Game%20engine/post_engine) are hosted on both `dev` and `production` servers. It would be a best practice to configure separate environments to point to each of the corresponding servers.
 
-- The unit tests are (very) incomplete, and it also wouldn't hurt to add integration and code coverage tests!
+- The unit tests are (very) incomplete. With more time, I would've liked to write tests for all components, but I added several empty `it()` blocks for a few of them, with sample descriptions of tests. It also wouldn't hurt to add integration and code coverage tests!
