@@ -52,6 +52,9 @@ const gameReducer = (state: any, action: Action) => {
 const Game = () => {
   const [state, dispatch] = useReducer(gameReducer, initialState);
 
+  const [hoverRow, setHoverRow] = useState<number|undefined>(undefined);
+  const [hoverCol, setHoverCol] = useState<number|undefined>(undefined);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
@@ -62,6 +65,7 @@ const Game = () => {
   
     if (nextBoardX[row][col] === '') {
       nextBoardX[row][col] = state.currentPlayer;
+      unhoverSquare();
     }
 
     dispatch({ type: 'MOVE', payload: { nextBoard: nextBoardX } });
@@ -82,6 +86,16 @@ const Game = () => {
   const handleReset = () => {
     dispatch({ type: 'RESET' });
   }
+
+  const hoverSquare = (row: number, col: number) => {
+    setHoverRow(row);
+    setHoverCol(col);
+  };
+
+  const unhoverSquare = () => {
+    setHoverRow(undefined);
+    setHoverCol(undefined);
+  };
   
   return (
     <>
@@ -95,6 +109,9 @@ const Game = () => {
                   key={colIndex}
                   onClick={() => handleClick(rowIndex, colIndex)}
                   disabled={ disableClick || !!value }
+                  onMouseOver={() => hoverSquare(rowIndex, colIndex)}
+                  onMouseOut={unhoverSquare}
+                  highlight={rowIndex === hoverRow || colIndex === hoverCol}
                 />
               </Grid>
             ))}
