@@ -2,12 +2,12 @@
   "name": "tic-tac-toe",
   "private": true,
   "version": "0.0.0",
-  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "mocha --require ts-node/register --require jsdom-global/register test/**/*.tsx"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -19,14 +19,25 @@
     "react-router-dom": "^6.15.0"
   },
   "devDependencies": {
+    "@testing-library/react": "^14.0.0",
+    "@types/chai": "^4.3.5",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^20.5.7",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
+    "@types/sinon-chai": "^3.2.9",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
     "@vitejs/plugin-react": "^4.0.3",
+    "chai": "^4.3.8",
     "eslint": "^8.45.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
+    "jsdom-global": "^3.0.2",
+    "mocha": "^10.2.0",
+    "sinon": "^15.2.0",
+    "sinon-chai": "^3.7.0",
+    "ts-node": "^10.9.1",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   }

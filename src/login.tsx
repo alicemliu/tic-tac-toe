@@ -43,11 +43,14 @@ const Login = ({
         onChange={event => setEmail(event.target.value)}
         error={error}
         helperText={error && 'There was an issue logging in, please try again later.'}
+        data-testid='email-input'
       />
       <LoadingButton 
         loading={isLoading}
         type='submit'
         variant='outlined'
+        data-testid='login-button'
+        disabled={!email}
       >
         Log In
       </LoadingButton>
