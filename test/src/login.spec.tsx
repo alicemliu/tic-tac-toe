@@ -7,17 +7,11 @@ import {
 } from '@testing-library/react';
 import { expect } from 'chai';
 import Login from '../../src/login';
-
-var sinon = require('sinon');
+import sinon, { SinonStub } from 'sinon';
 
 describe(Login.name, () => {
-  let fetchStub: any;
+  let fetchStub: SinonStub;
 
-  const mockToken = 'mock-token'
-  const mockResponse = {
-    'success': true,
-    'token': mockToken,
-  };
   const mockOnLogin = sinon.stub();
 
   beforeEach(() => {
@@ -64,5 +58,5 @@ describe(Login.name, () => {
 
     const loginButton = screen.getByTestId('login-button');
     fireEvent.click(loginButton);
-  };
+  }
 });
