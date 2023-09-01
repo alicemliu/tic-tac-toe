@@ -20,19 +20,24 @@ const Square = ({
   onMouseOut,
   highlight
 }: SquareProps) => {
+
+  const squareStyle = {
+    'border': 'solid',
+    'width': '100%',
+    'height': '100%',
+    'fontSize': '3em',
+    'backgroundColor': highlight ? highlightColor : 'white',
+    ':hover': {
+      bgcolor: 'primary.light',
+    }
+  }
+
   return (
     <Button
-      className="square"
       onClick={onClick}
       disabled={disabled}
       variant={'outlined'}
-      sx={{
-        'fontSize': '3em',
-        'backgroundColor': highlight ? highlightColor : 'white',
-        ':hover': {
-          bgcolor: 'primary.light',
-        },
-      }}
+      sx={squareStyle}
       onMouseOver={onMouseOver}
       onMouseOut={onMouseOut}      
     >

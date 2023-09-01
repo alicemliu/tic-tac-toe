@@ -23,27 +23,30 @@ function App() {
   }
 
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Navigate replace to="/login" />} />
-        <Route
-          path="/login"
-          element={
-            isAuthenticated
-            ? <Navigate to="/game" />
-            : <Login onLogin={handleLogin}/> 
-          }
-        />
-        <Route
-          path="/game"
-          element={
-            isAuthenticated
-            ? <Game />
-            : <Navigate to="/login" />
-          }
-        />
-      </Routes>
-    </Router>
+    <>
+      <h1>Tic Tac Toe</h1>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Navigate replace to="/login" />} />
+          <Route
+            path="/login"
+            element={
+              isAuthenticated
+              ? <Navigate to="/game" />
+              : <Login onLogin={handleLogin}/> 
+            }
+          />
+          <Route
+            path="/game"
+            element={
+              isAuthenticated
+              ? <Game />
+              : <Navigate to="/login" />
+            }
+          />
+        </Routes>
+      </Router>
+    </>
   );
 }
 

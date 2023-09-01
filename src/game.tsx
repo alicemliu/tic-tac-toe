@@ -8,6 +8,13 @@ enum Player {
   O = 'O'
 }
 
+const boardSquareStyle = {
+  'width': '7rem',
+  'display': 'flex',
+  'justifyContent': 'center',
+  'alignItems': 'center'
+}
+
 type Action = {
   type: string,
   payload?: {
@@ -70,7 +77,7 @@ const Game = () => {
 
     dispatch({ type: 'MOVE', payload: { nextBoard: nextBoardX } });
 
-    if (!checkFull(nextBoardX)) {
+    if (!checkFull(nextBoardX) && !checkWinner(nextBoardX)) {
       try {
         setIsLoading(true);
         const nextBoardO = await generateMove(nextBoardX);
@@ -101,9 +108,9 @@ const Game = () => {
     <>
       <div className='board'>
         { state?.board.map((row: Row, rowIndex: number) => (
-          <Grid container key={rowIndex} className='board-row'>
+          <Grid container key={rowIndex} sx={{'height': '7rem'}}>
             { row.map((value: Square, colIndex: number) => (
-              <Grid item xs={4} key={colIndex} className='board-square'>
+              <Grid item xs={4} key={colIndex} sx={boardSquareStyle}>
                 <Square 
                   value={value}
                   key={colIndex}
@@ -119,20 +126,19 @@ const Game = () => {
         ))}
       </div>
       <div className='status'>
-        { error ? <p>An error occured, please try again later.</p> 
+        { error ? <p>An error occured.</p> 
           : state.inProgress
             ? state.currentPlayer === Player.X
               ? <p>Your turn...</p>
               : <>
-                  <p>Computer's turn...</p>
+                  <p>Bot's turn...</p>
                   { isLoading && <CircularProgress size='1em'/> }
                 </>
             : <>
                 <p>
-                  { state.winner
-                    ? `${state.winner} is the winner!`
-                    : `It's a tie!`
-                  }
+                  { state.winner === Player.X && `You win!` }
+                  { state.winner === Player.O && `Bot wins!` }
+                  { state.winner === undefined && `It's a draw!` }
                 </p>
                 <Button onClick={handleReset} variant='outlined'>Start New Game</Button>
             </>
