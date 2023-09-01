@@ -100,10 +100,6 @@ export function checkWinner (board: Board) {
   return undefined;
 }
 
-export function checkTie (board: Board) {
+export function checkFull (board: Board) {
   return !board.flat().some(val => val === '');
-}
-
-export function checkEmpty (board: Board) {
-  return board.flat().every(val => val === '');
 }

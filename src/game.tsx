@@ -1,88 +1,92 @@
 import { CircularProgress, Grid, Button } from '@mui/material';
-import { useEffect, useState } from 'react';
-import { checkEmpty, checkWinner, checkTie, generateMove } from './utils';
+import { useState, useReducer } from 'react';
+import { checkWinner, checkFull, generateMove } from './utils';
 import Square from './square';
-
-const emptyBoard = Array(3).fill(Array(3).fill(''));
 
 enum Player {
   X = 'X',
   O = 'O'
 }
 
-const Game = () => {
-  const [board, setBoard] = useState<Board>(emptyBoard);
-  const [currentPlayer, setCurrentPlayer] = useState<Player>(Player.X);
-  const [winner, setWinner] = useState<Player|undefined>(undefined);
+type Action = {
+  type: string,
+  payload?: {
+    nextBoard?: Board
+  } | undefined,
+}
 
-  const [inProgress, setInProgress] = useState(true);
+const emptyBoard = Array(3).fill(Array(3).fill(''));
+const initialState = {
+  board: emptyBoard,
+  currentPlayer: Player.X,
+  winner: undefined,
+  inProgress: true
+}
+
+const gameReducer = (state: any, action: Action) => {
+  switch (action.type) {
+    case 'MOVE': {
+      const nextBoard = action?.payload?.nextBoard;
+
+      const isWinner = checkWinner(nextBoard!);
+      const isTie = !isWinner && checkFull(nextBoard!);
+
+      return {
+        ...state,
+        board: nextBoard,
+        currentPlayer:
+          state.currentPlayer === Player.X
+            ? Player.O
+            : Player.X,
+        winner: isWinner,
+        inProgress: !isWinner && !isTie,
+      };
+    }
+    case 'RESET':
+      return initialState;
+    default:
+      return state;
+  }
+};
+
+const Game = () => {
+  const [state, dispatch] = useReducer(gameReducer, initialState);
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false);
 
-  const disableClick = !inProgress || isLoading || error;
+  const disableClick = !state.inProgress || isLoading || error;
 
   const handleClick = async (row: number, col: number) => {
-    const nextBoard = board.map(row => row.slice());
-
-    if (board[row][col] === '') {
-      nextBoard[row][col] = currentPlayer;
-      setBoard(nextBoard);
+    const nextBoardX = state.board.map((row: Row) => row.slice());
+  
+    if (nextBoardX[row][col] === '') {
+      nextBoardX[row][col] = state.currentPlayer;
     }
-  }
 
-  const resetGame = () => {
-    setBoard(emptyBoard);
-    setCurrentPlayer(Player.X);
-    setWinner(undefined);
+    dispatch({ type: 'MOVE', payload: { nextBoard: nextBoardX } });
 
-    setInProgress(true);
-    setIsLoading(false);
-    setError(false);
-  }
-
-  useEffect(() => {
-    const isEmpty = checkEmpty(board);
-    
-    if (!isEmpty) {
-      const isWinner = checkWinner(board);
-      const isTie = checkTie(board);
-
-      if (isWinner) {
-        setWinner(currentPlayer);
-        setInProgress(false);
-      } else if (isTie) {
-        setInProgress(false);
-      } else {
-        setCurrentPlayer(currentPlayer === Player.X
-          ? Player.O
-          : Player.X
-        );
+    if (!checkFull(nextBoardX)) {
+      try {
+        setIsLoading(true);
+        const nextBoardO = await generateMove(nextBoardX);
+        dispatch({ type: 'MOVE', payload: { nextBoard: nextBoardO } });
+      } catch {
+        setError(true);
+      } finally {
+        setIsLoading(false);
       }
     }
-  }, [board]);
+  }
 
-  useEffect(() => {
-    if (currentPlayer === Player.O) {
-      (async () => {
-        try {
-          setIsLoading(true);
-          const nextBoard = await generateMove(board);
-          if (nextBoard) {
-            setBoard(nextBoard);
-          }
-        } catch {
-          setError(true);
-        } finally {
-          setIsLoading(false);
-        }
-      })();
-    }
-  }, [currentPlayer, board]);
+  const handleReset = () => {
+    dispatch({ type: 'RESET' });
+  }
   
   return (
     <>
       <div className='board'>
-        { board.map((row, rowIndex: number) => (
+        { state?.board.map((row: Row, rowIndex: number) => (
           <Grid container key={rowIndex} className='board-row'>
             { row.map((value: Square, colIndex: number) => (
               <Grid item xs={4} key={colIndex} className='board-square'>
@@ -99,8 +103,8 @@ const Game = () => {
       </div>
       <div className='status'>
         { error ? <p>An error occured, please try again later.</p> 
-          : inProgress
-            ? currentPlayer === Player.X
+          : state.inProgress
+            ? state.currentPlayer === Player.X
               ? <p>Your turn...</p>
               : <>
                   <p>Computer's turn...</p>
@@ -108,12 +112,12 @@ const Game = () => {
                 </>
             : <>
                 <p>
-                  { winner
-                    ? `${winner} is the winner!`
+                  { state.winner
+                    ? `${state.winner} is the winner!`
                     : `It's a tie!`
                   }
                 </p>
-                <Button onClick={resetGame} variant='outlined'>Start New Game</Button>
+                <Button onClick={handleReset} variant='outlined'>Start New Game</Button>
             </>
         }
       </div>

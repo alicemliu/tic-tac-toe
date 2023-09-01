@@ -1,2 +1,3 @@
 type Square = 'X' | 'O' | '';
-type Board = Array<Array<Square>>;
+type Row = Array<Square>;
+type Board = Array<Row>;
